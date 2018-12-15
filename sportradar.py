@@ -27,18 +27,11 @@ def getPlayerData(soup):
 		position = x.get('position')
 		player_tup = (name, height, weight, position)
 		player_info.append(player_tup)
-	# print(player_info)
 	return(player_info)
 
 def rangeOfWeight(soup):
 	data = getPlayerData(soup)
-	r175200 = 0
-	r200225 = 0
-	r225250 = 0
-	r250275 = 0
-	r275300 = 0
-	r300325 = 0
-	r325350 = 0
+	r175200 = r200225 = r225250 = r250275 = r275300 = r300325 = r325350 = 0
 	for x in data:
 		weight = float(x[2])
 		if weight >= 175 and weight < 200:
@@ -64,6 +57,7 @@ def rangeOfWeight(soup):
 	dictionary["275-299"] = r275300
 	dictionary["300-324"] = r300325
 	dictionary["325-349"] = r325350
+	# print(dictionary)
 	return (dictionary)
 
 def removeDuplicate(dup):
@@ -175,32 +169,30 @@ def averageHeightforPosition(soup):
 	average19 = position19 / count19
 	average = [average0, average1, average2, average3, average4, average5, average6, average7, average8, average9, average10, average11, average12, average13, average14, average15, average16, average17, average18, average19]
 	dictionary = dict()
-	dictionary["DL"] = average0
-	dictionary["QB"] = average1
-	dictionary["OL"] = average2
-	dictionary["LB"] = average3
-	dictionary["WR"] = average4
-	dictionary["TE"] = average5
-	dictionary["RB"] = average6
-	dictionary["DE"] = average7
-	dictionary["DT"] = average8
-	dictionary["DB"] = average9
-	dictionary["C"] = average10
-	dictionary["K"] = average11
-	dictionary["FB"] = average12
-	dictionary["T"] = average13
-	dictionary["SS"] = average14
-	dictionary["B"] = average15
-	dictionary["P"] = average16
-	dictionary["LS"] = average17
-	dictionary["G"] = average18
-	dictionary["OLB"] = average19
+	# positionAbbrev = ['Defensive Line', 'Quarterback', 'Offensive Line', 'Linebacker', 'Wide Receiver', 'Tight End', ' Runningback', 'Defensive End', 'Defensive Tackle', 'Defensive Back', 'Center', 'Kicker', 'Fullback', 'Offensive Tackle', 'Strong Safety', 'Back', 'Punter', 'Long Snapper', 'Guard', 'Offensive Linebacker']
+	dictionary["Defensive Line"] = average0
+	dictionary["Quarterback"] = average1
+	dictionary["Offensive Line"] = average2
+	dictionary["Linebacker"] = average3
+	dictionary["Wide Receiver"] = average4
+	dictionary["Tight End"] = average5
+	dictionary["Runningback"] = average6
+	dictionary["Defensive End"] = average7
+	dictionary["Defensive Tackle"] = average8
+	dictionary["Defensive Back"] = average9
+	dictionary["Center"] = average10
+	dictionary["Kicker"] = average11
+	dictionary["Fullback"] = average12
+	dictionary["Tackle"] = average13
+	dictionary["Strong Safety"] = average14
+	dictionary["Bback"] = average15
+	dictionary["Punter"] = average16
+	dictionary["Long Snapper"] = average17
+	dictionary["Guard"] = average18
+	dictionary["Offensive Linebacker"] = average19
 	# print(dictionary)
 	return(dictionary)
-averageHeightforPosition(soup)
 
-conn = sqlite3.connect('sportradar.sqlite')
-cur = conn.cursor()
 
 def createTableofData(soup, conn, cur):
 	cur.execute('CREATE TABLE IF NOT EXISTS PlayerSize (name TEXT, height INTEGER, weight INTEGER, position TEXT)')
@@ -213,7 +205,7 @@ def createTableofData(soup, conn, cur):
 		cur.execute('INSERT INTO PlayerSize (name, height, weight, position) VALUES (?, ?, ?, ?)',
 		 (_name, _height, _weight, _position))
 		conn.commit()
-createTableofData(soup, conn, cur)
+
 
 def createBarGraphofWeights(soup):
 	# fig, ax = plt.subplots()
@@ -225,14 +217,41 @@ def createBarGraphofWeights(soup):
 	plt.title('Seattle Seahawks And New England Patriots Weight Distribution')
 	plt.show()
 
+
 def createBarGraphOfAvgHeight(soup):
 	# list of all positions
 	xValues = averageHeightforPosition(soup).keys()
 	yValues = averageHeightforPosition(soup).values()
 	plt.bar(xValues, yValues, color=(0.8, 0.5, 0.2, 0.6))
+	plt.xticks(rotation=60)
 	plt.xlabel('positions')
 	plt.ylabel('height (inches)')
 	plt.title('Seattle Seahawks And New England Patriots Average Height Based On Position')
+	plt.ylim(bottom=60, top= 80)
+	# positionAbbrev = ['Defensive Line', 'Quarterback', 'Offensive Line', 'Linebacker', 'Wide Receiver', 'Tight End', ' Runningback', 'Defensive End', 'Defensive Tackle', 'Defensive Back', 'Center', 'Kicker', 'Fullback', 'Offensive Tackle', 'Strong Safety', 'Back', 'Punter', 'Long Snapper', 'Guard', 'Offensive Linebacker']
+	# plt.legend(positionAbbrev, loc=20)
 	plt.show()
-	plt.legend([])
-createBarGraphOfAvgHeight(soup)
+
+def main():
+	conn = sqlite3.connect('sportradar.sqlite')
+	cur = conn.cursor()
+	print("Welcome to ")
+	print("Do you want to know more about the players in the New England Patriots and the Seattle Seahawks?\n")
+	userInput = input("enter 'Yes' for more information\nenter 'No' to exit\n")
+	if(userInput == "Yes"):
+		createTableofData(soup, conn, cur)
+		print("All data including NFL player name, height, weight, and position is in SQL database\n")
+	else:
+		print("Thank you for your interest. To view charts, please run program again and type in 'Yes'\n")
+		exit()
+
+	print("Weight distribution of players in Patriots and Seahawks")
+	print("175lbs to 119lbs: 17 \n200lbs to 224lbs: 28 \n225lbs to 249lbs: 15 \n250lbs to 274lbs: 21 \n275lbs to 299lbs: 0 \n300lbs to 324: 22 \n325lbs to 349lbs: 2")
+	createBarGraphofWeights(soup)
+
+	print("Average height based on postion\n")
+	print("Defensive Line: ")
+	createBarGraphOfAvgHeight(soup)
+
+if __name__ == '__main__':
+	main()
