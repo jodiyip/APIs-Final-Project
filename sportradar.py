@@ -185,7 +185,7 @@ def averageHeightforPosition(soup):
 	dictionary["Fullback"] = average12
 	dictionary["Tackle"] = average13
 	dictionary["Strong Safety"] = average14
-	dictionary["Bback"] = average15
+	dictionary["Back"] = average15
 	dictionary["Punter"] = average16
 	dictionary["Long Snapper"] = average17
 	dictionary["Guard"] = average18
@@ -214,30 +214,31 @@ def createBarGraphofWeights(soup):
 	plt.bar(xValues, yValues, color=(0.5, 0.1, 0.7, 0.6))
 	plt.xlabel('weight range (pounds)')
 	plt.ylabel('number of players')
-	plt.title('Seattle Seahawks And New England Patriots Weight Distribution')
+	plt.title('Seahawks And Patriots Weight Distribution')
+	plt.savefig('WeightDistributionBarChart')
 	plt.show()
 
 
 def createBarGraphOfAvgHeight(soup):
-	# list of all positions
 	xValues = averageHeightforPosition(soup).keys()
 	yValues = averageHeightforPosition(soup).values()
 	plt.bar(xValues, yValues, color=(0.8, 0.5, 0.2, 0.6))
 	plt.xticks(rotation=60)
 	plt.xlabel('positions')
 	plt.ylabel('height (inches)')
-	plt.title('Seattle Seahawks And New England Patriots Average Height Based On Position')
+	plt.title('Seahawks And Patriots Average Height Based On Position')
 	plt.ylim(bottom=60, top= 80)
-	# positionAbbrev = ['Defensive Line', 'Quarterback', 'Offensive Line', 'Linebacker', 'Wide Receiver', 'Tight End', ' Runningback', 'Defensive End', 'Defensive Tackle', 'Defensive Back', 'Center', 'Kicker', 'Fullback', 'Offensive Tackle', 'Strong Safety', 'Back', 'Punter', 'Long Snapper', 'Guard', 'Offensive Linebacker']
-	# plt.legend(positionAbbrev, loc=20)
+	plt.savefig('AverageHeightBarChart')
 	plt.show()
 
 def main():
 	conn = sqlite3.connect('sportradar.sqlite')
 	cur = conn.cursor()
-	print("Welcome to ")
+	print("Welcome to Sport Analysis!")
 	print("Do you want to know more about the players in the New England Patriots and the Seattle Seahawks?\n")
-	userInput = input("enter 'Yes' for more information\nenter 'No' to exit\n")
+	userInput = input("Enter 'Yes' for more information\nEnter 'No' to exit\n")
+	print("")
+
 	if(userInput == "Yes"):
 		createTableofData(soup, conn, cur)
 		print("All data including NFL player name, height, weight, and position is in SQL database\n")
@@ -245,12 +246,13 @@ def main():
 		print("Thank you for your interest. To view charts, please run program again and type in 'Yes'\n")
 		exit()
 
-	print("Weight distribution of players in Patriots and Seahawks")
-	print("175lbs to 119lbs: 17 \n200lbs to 224lbs: 28 \n225lbs to 249lbs: 15 \n250lbs to 274lbs: 21 \n275lbs to 299lbs: 0 \n300lbs to 324: 22 \n325lbs to 349lbs: 2")
+	print("Number of players within each weight distribution in Patriots and Seahawks")
+	print("175lbs to 119lbs: 17 \n200lbs to 224lbs: 28 \n225lbs to 249lbs: 15 \n250lbs to 274lbs: 21 \n275lbs to 299lbs: 0 \n300lbs to 324lbs: 22 \n325lbs to 349lbs: 2")
+	print("")
 	createBarGraphofWeights(soup)
 
-	print("Average height based on postion\n")
-	print("Defensive Line: ")
+	print("Average height of players in Patriots and Seahawks based on postion")
+	print("Defensive Line: 75.1 inches \nQuarterback: 75.0 inches \nOffensive Line: 77.1 inches\nLinebacker: 74.0 inches \nWide Receiver: 72.8 inches \nTight End: 77.0 inches \nRunningback: 70.7 inches \nDefensive End: 74.7 inches \nKicker: 74.5 inches \nFullback: 72.5 inches \nTackle: 77.8 inches \nStrong Safety: 71.5 inches \nBack: 71.3 inches \nPunter: 74.5 inches \nLong Snapper: 75.0 inches \nGuard: 76.0 inches \nOffensive Linebacker: 75.0 inches")
 	createBarGraphOfAvgHeight(soup)
 
 if __name__ == '__main__':
