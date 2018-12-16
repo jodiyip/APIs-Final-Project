@@ -234,8 +234,8 @@ def createBarGraphOfAvgHeight(soup):
 def main():
 	conn = sqlite3.connect('sportradar.sqlite')
 	cur = conn.cursor()
-	print("Welcome to Sport Analysis!")
-	print("Do you want to know more about the players in the New England Patriots and the Seattle Seahawks?\n")
+	print("Welcome to Sport Analysis!\n")
+	print("Are you interested in a statistical breakdown of the players in the New England Patriots and the Seattle Seahawks?\n")
 	userInput = input("Enter 'Yes' for more information\nEnter 'No' to exit\n")
 	print("")
 
@@ -243,7 +243,7 @@ def main():
 		createTableofData(soup, conn, cur)
 		print("All data including NFL player name, height, weight, and position is in SQL database\n")
 	else:
-		print("Thank you for your interest. To view charts, please run program again and type in 'Yes'\n")
+		print("Thank you for using Sport Analysis. To view charts, please run program again and type in 'Yes'\n")
 		exit()
 
 	print("Number of players within each weight distribution in Patriots and Seahawks")
